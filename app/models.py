@@ -3,15 +3,15 @@ from django.db import models
 
 class Animal(models.Model):
     GENDER_TYPES = (
-        ('male', 'мальчик'),
-        ('female', 'девочка')
+        ('Мальчик', 'Мальчик'),
+        ('Девочка', 'Девочка')
     )
     ANIMAL_SPECIES = (
-        ('dog', 'Собака'),
-        ('cat', 'Кошка'),
+        ('Собака', 'Собака'),
+        ('Кошка', 'Кошка'),
     )
     name = models.CharField("Имя", max_length=20)
-    species = models.CharField(max_length=3, choices=ANIMAL_SPECIES)
+    species = models.CharField(max_length=20, choices=ANIMAL_SPECIES)
     gender = models.CharField("Пол", max_length=10, choices=GENDER_TYPES)
     short_text = models.CharField("Короткое описание", max_length=255)
     description = models.TextField("Описание", )
@@ -19,7 +19,7 @@ class Animal(models.Model):
     main_image = models.ImageField("Главное изображение", upload_to='animal_images')
 
     def __str__(self):
-        return self.name
+        return f'{self.name} - {self.gender} - {self.species}'
 
 
 class Volunteer(models.Model):
@@ -28,7 +28,6 @@ class Volunteer(models.Model):
 
     def __str__(self):
         return self.name
-
 
 
 class AnimalImage(models.Model):

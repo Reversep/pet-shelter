@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework import mixins
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 from rest_framework import status
-# from .models import Dog
 from .serializers import DogSerializer
+
+from .permissions import IsAuthenticatedOrSafeMethods
 
 from .models import Animal
 from .serializers import *
@@ -13,93 +16,55 @@ from .serializers import *
 class AnimalViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrSafeMethods, ]
+
+
 
 
 class DogViewSet(viewsets.ModelViewSet):
     queryset = Animal.objects.filter(species='dog')
     serializer_class = DogSerializer
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrSafeMethods, ]
 
     def perform_create(self, serializer):
         serializer.save(species='dog')
 
-    # def create(self, request):
-    #     serializer = DogSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # def retrieve(self, request, pk=None):
-    #     try:
-    #         dog = Animal.objects.get(pk=pk)
-    #     except Animal.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-    #     serializer = DogSerializer(dog)
-    #     return Response(serializer.data)
-    #
-    # def update(self, request, pk=None):
-    #     try:
-    #         dog = Animal.objects.get(pk=pk)
-    #     except Animal.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-    #     serializer = DogSerializer(dog, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # def destroy(self, request, pk=None):
-    #     try:
-    #         dog = Animal.objects.get(pk=pk)
-    #     except Animal.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-    #     dog.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CatViewSet(viewsets.ModelViewSet):
     queryset = Animal.objects.filter(species='cat')
     serializer_class = CatSerializer
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrSafeMethods, ]
 
-    def create(self, request):
-        serializer = CatSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        serializer.save(species='cat')
 
-    def retrieve(self, request, pk=None):
-        try:
-            dog = Animal.objects.get(pk=pk)
-        except Animal.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = DogSerializer(dog)
-        return Response(serializer.data)
-
-    def update(self, request, pk=None):
-        try:
-            dog = Animal.objects.get(pk=pk)
-        except Animal.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = DogSerializer(dog, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, pk=None):
-        try:
-            dog = Animal.objects.get(pk=pk)
-        except Animal.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        dog.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class VolunteerViewSet(viewsets.ModelViewSet):
     queryset = Volunteer.objects.all()
     serializer_class = VolunteerSerializer
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrSafeMethods, ]
+
 
 class AnimalImageViewSet(viewsets.ModelViewSet):
     queryset = AnimalImage.objects.all()
     serializer_class = AnimalImageSerializer
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrSafeMethods, ]
+
+
+@api_view(http_method_names=['GET', ])
+@authentication_classes([BasicAuthentication, ])
+# @permission_classes([IsAuthenticated, ])
+def get_user_info(request):
+    user = request.user
+    data = {
+        'username': user.username,
+        'password': user.password
+    }
+    return Response(data)

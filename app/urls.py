@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework.authtoken import views as auth_views
 
 from . import views
 #
@@ -15,6 +16,9 @@ router.register(r'image', views.AnimalImageViewSet)
 urlpatterns = [
 
     path('', include(router.urls)),
+    path('user_info/', views.get_user_info),
+    path('auth_token/', auth_views.obtain_auth_token),
+    path('auth/', include('rest_framework.urls')),
 
     path('dog/', views.DogViewSet.as_view(
         {'get': 'list', 'post': 'create'}
