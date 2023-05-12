@@ -3,12 +3,12 @@ from django.db import models
 
 class Animal(models.Model):
     GENDER_TYPES = (
-        ('Мальчик', 'Мальчик'),
-        ('Девочка', 'Девочка')
+        ('Male', 'Мальчик'),
+        ('Female', 'Девочка')
     )
     ANIMAL_SPECIES = (
-        ('Собака', 'Собака'),
-        ('Кошка', 'Кошка'),
+        ('Dog', 'Собака'),
+        ('Cat', 'Кошка'),
     )
     name = models.CharField("Имя", max_length=20)
     species = models.CharField(max_length=20, choices=ANIMAL_SPECIES)
@@ -16,7 +16,7 @@ class Animal(models.Model):
     short_text = models.CharField("Короткое описание", max_length=255)
     description = models.TextField("Описание", )
     caretaker = models.ForeignKey('Volunteer', null=True, blank=True, on_delete=models.SET_NULL)
-    main_image = models.ImageField("Главное изображение", upload_to='animal_images')
+    main_image = models.ImageField("Главное изображение", upload_to='animal_images', null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} - {self.gender} - {self.species}'

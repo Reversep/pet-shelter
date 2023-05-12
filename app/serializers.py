@@ -9,6 +9,7 @@ class AnimalSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['species']
 
+
 class DogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Animal
@@ -21,6 +22,7 @@ class CatSerializer(serializers.ModelSerializer):
         model = Animal
         fields = '__all__'
         read_only_fields = ['species']
+
 
 class VolunteerSerializer(serializers.ModelSerializer):
     class Meta:

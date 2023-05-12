@@ -3,20 +3,16 @@ from rest_framework import routers
 from rest_framework.authtoken import views as auth_views
 
 from . import views
-#
-#
+
 router = routers.DefaultRouter()
 router.register(r'animals', views.AnimalViewSet)
 router.register(r'volunteer', views.VolunteerViewSet)
 router.register(r'image', views.AnimalImageViewSet)
-# router.register(r'dog', views.DogViewSet, basename='dogs')
-# router.register(r'cat', views.CatViewSet, basename='cats')
 
 
 urlpatterns = [
 
     path('', include(router.urls)),
-    path('user_info/', views.get_user_info),
     path('auth_token/', auth_views.obtain_auth_token),
     path('auth/', include('rest_framework.urls')),
 
